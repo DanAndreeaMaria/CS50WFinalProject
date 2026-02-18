@@ -1,0 +1,133 @@
+{% extends "wellnest/layout.html" %}
+
+{% block body %}
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <h2 class="analysis-title"><i class="fa-solid fa-calendar-week fa-custom"></i> Weekly Wellbeing Overview</h2>
+
+    <!-- Show a message if there is not enough data -->
+    {% if not_enough_data %}
+        <p class="analysis-text">
+           You don't have enough check-ins yet to see trends. 
+           Try completing a few more daily checkins.
+        </p>
+    {% else %}
+        <!-- Analyze averages for moods -->
+        <p class="analysis-text">Based on your last {{ checkin_count }} days: </p>
+
+        <ul class="analysis-list">
+            <li class="analysis-list-item"><strong><i class="fa-solid fa-face-smile-beam fa-custom"></i> Average mood: </strong>{{ averages.mood }} ({{ labels.mood }})</li>
+            <li class="analysis-list-item"><strong><i class="fa-solid fa-bolt fa-custom"></i> Average energy: </strong>{{ averages.energy }} ({{ labels.energy }})</li>
+            <li class="analysis-list-item"><strong><i class="fa-solid fa-heart fa-custom"></i> Average stress: </strong>{{ averages.stress }} ({{ labels.stress }})</li>
+            <li class="analysis-list-item"><strong><i class="fa-solid fa-feather-pointed fa-custom"></i> Average sleep quality: </strong>{{ averages.sleep }} ({{ labels.sleep }})</li>
+            <li class="analysis-list-item"><strong><i class="fa-solid fa-user fa-custom"></i> Average social: </strong>{{ averages.social }} ({{ labels.social }})</li>
+            <li class="analysis-list-item"><strong><i class="fa-solid fa-seedling fa-custom"></i> Average activities: </strong>{{ averages.activity }} ({{ labels.activity }})</li>
+        </ul>
+
+        <!-- Weekly moods averages -->
+        <h3 class="analysis-subtitle"><i class="fa-solid fa-face-smile-beam fa-custom"></i> Mood over the last 7 days</h3>
+
+        <!-- Mood chart -->
+        <div class="chart-container">
+            <canvas id="moodChart"></canvas>
+        </div>
+
+        <!-- Weekly insights -->
+        <h3 class="analysis-subtitle"><i class="fa-solid fa-chart-line fa-custom"></i> Your weekly insights</h3>
+        <ul class="analysis-list">
+            <li class="analysis-item-week"><i class="fa-solid fa-face-smile-beam fa-custom"></i> Your overall mood this week was <strong>{{ labels.mood }}</strong></li>
+            <li class="analysis-item-week"><i class="fa-solid fa-bolt fa-custom"></i> Your energy levels were generally <strong>{{ labels.energy }}</strong></li>
+            <li class="analysis-item-week"><i class="fa-solid fa-heart fa-custom"></i> Your stress levels were <strong>{{ labels.stress }}</strong></li>
+        </ul>
+
+        <!-- Trends of the week -->
+        <p class="analysis-text">
+            Mood trend this week:
+            {% if trends.mood == "improving" %}
+                <strong><i class="fa-solid fa-arrow-trend-up fa-custom"></i> gently improving</strong>
+            {% elif trends.mood == "declining" %}
+                <strong><i class="fa-solid fa-arrow-trend-down fa-custom"></i> a bit lower</strong>
+            {% else %} 
+                <strong><i class="fa-solid fa-arrow-right fa-custom"></i> stable</strong>
+            {% endif %}
+        </p>
+
+        <h3 class="analysis-subtitle"><i class="fa-solid fa-moon fa-custom"></i> Sleep chart over the last 7 days</h3>
+
+        <!-- Sleep chart -->
+        <div class="chart-container">
+            <canvas id="sleepChart"></canvas>
+        </div>
+
+        <!-- Show gently suggestions -->
+        {% if suggestions %}
+            <h3 class="analysis-subtitle"><i class="fa-solid fa-spa fa-custom-2"></i> Gentle suggestions</h3>
+            <ul class="analysis-list">
+                {% for suggestion in suggestions %}
+                    <li class="analysis-suggestion"><i class="fa-solid fa-angle-right fa-custom-2"></i> {{ suggestion }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+    {% endif %}
+
+
+    <script>
+        {% comment %} Adding the data in charts {% endcomment %}
+        const dates = {{ dates|safe }};
+        const moodValues = {{ mood_values|safe }};
+        const energyValues = {{ energy_values|safe }};
+        const stressValues = {{ stress_values|safe }};
+        const sleepValues = {{ sleep_values|safe }};
+
+        const moodChart = new Chart(document.getElementById("moodChart"), {
+            type: "line",
+            data: {
+                labels: dates,
+                datasets: [
+                    { label: "Mood", data: moodValues, tension: 0.3 },
+                    { label: "Energy", data: energyValues, tension: 0.3 },
+                    { label: "Stress", data: stressValues, tension: 0.3 }
+                ]
+            },
+            options: {
+                responsize: true,
+                mainAspectRatio: false,
+                scales: {
+                    y: {
+                        min: 1,
+                        max: 5,
+                        ticks: {stepSize: 1}
+                    }
+                }
+            }
+        });
+
+        const sleepChart = new Chart(document.getElementById("sleepChart"), {
+            type: "line",
+            data: {
+                labels: dates,
+                datasets: [
+                { label: "Sleep quality", data: sleepValues, tension: 0.3 }]
+            },
+            options: {
+                responsize: true,
+                mainAspectRatio: false,
+                scales: {
+                    y: {
+                        min: 1,
+                        max: 5,
+                        ticks: {stepSize: 1}
+                    }
+                }
+            }
+        });
+
+        window.addEventListener("resize", () => {
+            moodChart.resize();
+            sleepChart.resize();
+        });
+    </script>
+
+{% endblock %}

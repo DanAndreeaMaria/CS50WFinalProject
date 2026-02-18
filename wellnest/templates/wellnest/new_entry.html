@@ -1,0 +1,48 @@
+{% extends "wellnest/layout.html" %}
+
+{% block body %}
+
+<div class="entry-form-content">
+    <!-- New entry form -->
+    <form id="entryForm" method="post">
+        {% csrf_token %}
+
+        <div class="form-group form-group-flexbox">
+            <div class="entries-form-group">
+            <label for="mood" class="daily-entry-label">How are you feeling?</label>
+                <select id="mood-select" class="daily-entry-select" name="mood" required>
+                    <option value="">Select mood</option>
+                    <option value="1">😞 Very bad</option>
+                    <option value="2">😕 Bad</option>
+                    <option value="3">😐 Neutral</option>
+                    <option value="4">🙂 Good</option>
+                    <option value="5">😄 Very good</option>
+                </select>
+            </div>
+
+            <div class="entries-form-group">
+                <label for="quality" class="daily-entry-label">How was your day?</label>
+                <select class="daily-entry-select" name="quality" required>
+                    <option value="">Select mood</option>
+                    <option value="1">😞 Very bad</option>
+                    <option value="2">😕 Bad</option>
+                    <option value="3">😐 Neutral</option>
+                    <option value="4">🙂 Good</option>
+                    <option value="5">😄 Very good</option>
+                </select>
+            </div>
+        </div>
+        
+            <textarea
+                class="form-control"
+                name="text"
+                rows="5"
+                placeholder="Write your thoughts..."
+            ></textarea>
+
+        <button id="saveButton" type="submit" class="btn mt-2 btn-custom-color-2">Save</button>
+    </form>
+</div>
+
+{% endblock %}
+

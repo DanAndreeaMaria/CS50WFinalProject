@@ -1,0 +1,30 @@
+{% extends "wellnest/layout.html" %}
+
+{% block body %}
+
+    <div class="flex-form">
+        <h2 class="page-title">Register</h2>
+
+        {% if message %}
+            <div>{{ message }}</div>
+        {% endif %}
+
+        <!-- Register form -->
+        <form action="{% url 'register' %}" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <input class="form-control" autofocus type="text" name="username" placeholder="Username">
+            </div>
+            <div class="form-group">
+                <input class="form-control" name="password" type="password" placeholder="Password">
+            </div>
+            <div class="form-group">
+                <input class="form-control" name="confirmation" type="password" placeholder="Confirmation">
+            </div>
+            <input class="btn btn-custom-color" type="submit" value="Register">
+        </form>
+
+        <h6 class="account-check">Already have an account? <a class="custom-link" href="{% url 'login' %}">Log In here.</a></h6>
+    </div>
+
+{% endblock %}

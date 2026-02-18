@@ -1,0 +1,92 @@
+{% extends "wellnest/layout.html" %}
+
+{% block body %}
+
+    <h2 class="page-title">Daily Check-in</h2>
+
+    {% if checkin_done %}
+        <p>You've already checked in today. Feel free to come back tomorrow 💛</p>
+    {% else %}
+
+        <!-- Form for daily check-in -->
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-group custom-form-group">
+                <label for="mood" class="mood-label">How are you feeling right now?</label>
+                <select id="mood" name="mood" class="form-control custom-form-control" required>
+                    <option value="">Select mood</option>
+                    <option value="1">Very bad</option>
+                    <option value="2">Bad</option>
+                    <option value="3">Okay</option>
+                    <option value="4">Good</option>
+                    <option value="5">Great</option>
+                </select>
+            </div>
+
+            <div class="form-group custom-form-group">
+                <label for="energy" class="mood-label">How is your energy right now?</label>
+                <select id="energy" name="energy" class="form-control custom-form-control" required>
+                    <option value="">Select energy level</option>
+                    <option value="1">Very low</option>
+                    <option value="2">Low</option>
+                    <option value="3">Okay</option>
+                    <option value="4">Good</option>
+                    <option value="5">Very good</option>
+                </select>
+            </div>
+
+            <div class="form-group custom-form-group">
+                <label for="stress" class="mood-label">Take a moment to breathe — how stressed do you feel right now?</label>
+                <select id="stress" name="stress" class="form-control custom-form-control" required>
+                    <option value="">Select stress level</option>
+                    <option value="1">Very low</option>
+                    <option value="2">Low</option>
+                    <option value="3">Moderate</option>
+                    <option value="4">High</option>
+                    <option value="5">Very high</option>
+                </select>
+            </div>
+
+            <div class="form-group custom-form-group">
+                <label for="sleep" class="mood-label">How restful was your sleep last night? </label>
+                <select id="sleep" name="sleep" class="form-control custom-form-control" required>
+                    <option value="">Select sleep quality</option>
+                    <option value="1">Very poor</option>
+                    <option value="2">Poor</option>
+                    <option value="3">Okay</option>
+                    <option value="4">Good</option>
+                    <option value="5">Great</option>
+                </select>
+            </div>
+
+            <div class="form-group custom-form-group">
+                <label for="social" class="mood-label">Did you connect with someone today? </label>
+                <select id="social" name="social" class="form-control custom-form-control" required>
+                    <option value="">Select social level</option>
+                    <option value="1">None</option>
+                    <option value="2">Some</option>
+                    <option value="3">A few</option>
+                    <option value="4">A lot</option>
+                    <option value="5">Very social day</option>
+                </select>
+            </div>
+
+            <div class="form-group custom-form-group">
+                <label for="activity" class="mood-label">Did you make time for something enjoyable today? </label>
+                <select id="activity" name="activity" class="form-control custom-form-control" required>
+                    <option value="">Select activity level</option>
+                    <option value="1">Not al all</option>
+                    <option value="2">A little</option>
+                    <option value="3">Some</option>
+                    <option value="4">Quite a bit</option>
+                    <option value="5">A lot</option>
+                </select>
+            </div>
+
+            <button class="btn btn-custom-color-2">Submit check-in</button>
+        </form>
+
+    {% endif %}
+
+{% endblock %}

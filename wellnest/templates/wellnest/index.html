@@ -1,0 +1,71 @@
+{% extends "wellnest/layout.html"%}
+
+{% block body %}
+    <!-- Top buttons -->
+    {% if user.is_authenticated %}
+        <a href="{% url 'new_entry' %}" class="btn mt-3 mb-3 btn-custom-color"><i class="fa-solid fa-plus"></i> Journal moment</a>
+
+        {% if not checkin_done %}
+            <a href="{% url 'daily_checkin' %}" class="btn mt-3 mb-3 btn-custom-color">Complete daily check-in</a>
+        {% else %}
+            <h3 class="daily-check-in"><i class="fa-regular fa-circle-check"></i> Daily check-in completed!</h3>
+        {% endif %}
+
+        <a href="{% url 'analysis' %}" class="btn mt-3 mb-3 btn-custom-color-2"><i class="fa-solid fa-chart-line"></i> View wellbeing overview</a>
+            
+    {% endif %}
+
+    <!-- Entry saved message -->
+    <div id="flashMessage" class="alert alert-success alert-success-custom" style="opacity: 0">
+        Journal saved successfully <i class="fa-solid fa-heart-circle-check fa-custom"></i>
+    </div> 
+
+    <!-- Daily check-in card -->
+    {% if checkin_done %}
+        <div id="custom-quiz" class="card mb-3 custom-quiz-card">
+            <div class="card-body">
+                <h4 class="card-title"><i class="fa-solid fa-check-double"></i> Today's Check-In</h4>
+                <small class="text-muted">
+                    {{ checkin_done.created_at|date:"M d, Y H:i" }}
+                </small>
+                <p class="mood-content"><strong class="moods">Mood: </strong>{{ checkin_done.get_mood_display }}</p>
+                <p class="mood-content"><strong class="moods">Energy: </strong>{{ checkin_done.get_energy_display }}</p>
+                <p class="mood-content"><strong class="moods">Stress: </strong>{{ checkin_done.get_stress_display }}</p>
+                <p class="mood-content"><strong class="moods">Sleep: </strong>{{ checkin_done.get_sleep_display }}</p>
+                <p class="mood-content"><strong class="moods">Social: </strong>{{ checkin_done.get_social_display }}</p>
+                <p class="mood-content"><strong class="moods">Activity: </strong>{{ checkin_done.get_activity_display }}</p>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Journal entries with pagination -->
+    <h2 class="journal-entries"><i class="fa-solid fa-book"></i> My journal moments</h2>
+        {% for entry in entries %}
+            <div id="custom-card" class="card mb-3 custom-entry-card">
+                <div class="card-body">
+                    <small class="text-muted">
+                        <i class="fa-regular fa-clock"></i> {{ entry.created_at|date:"M d, Y H:i" }}
+                    </small>
+                    <p class="mood-content"><strong class="moods">How are you feeling? </strong><span id="mood-value">{{ entry.get_mood_display }}</span></p>
+                    <p class="mood-content"><strong class="moods">How was your day? </strong><span>{{ entry.get_quality_display }}</span></p>
+                    <p class="mt-2 custom-entry-text">{{ entry.text }}</p>
+                </div>
+            </div>
+        {% empty %}
+            <p>No entries yet.</p>
+        {% endfor %}
+
+    <!-- Pagination links -->
+    <div class="pagination mt-3">
+        {% if entries.has_previous %}
+            <a href="?page={{ entries.previous_page_number }}" class="btn btn-primary btn-custom-color">Previous</a>
+        {% endif %}
+
+        <span class="paginator"><h6 class="pagination-text">Page {{ entries.number }} of {{ entries.paginator.num_pages }}</h6></span>
+        
+        {% if entries.has_next %}
+            <a href="?page={{ entries.next_page_number }}" class="btn btn-primary btn-custom-color">Next</a>
+        {% endif %}
+    </div>
+
+{% endblock %}
